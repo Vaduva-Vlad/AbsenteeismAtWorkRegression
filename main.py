@@ -7,11 +7,9 @@ from sklearn.preprocessing import StandardScaler
 
 def onehot_encode(df, column, prefix):
     df = df.copy()
-
-    dummies = pd.get_dummies(df[column], prefix=prefix)
-    df = pd.concat([df, dummies], axis=1)
+    encoded = pd.get_dummies(df[column], prefix=prefix)
+    df = pd.concat([df, encoded], axis=1)
     df = df.drop(column, axis=1)
-
     return df
 
 
