@@ -4,24 +4,22 @@ from sklearn.metrics import r2_score, mean_squared_error, root_mean_squared_erro
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-
-def onehot_encode(df, column, prefix):
-    df = df.copy()
-    encoded = pd.get_dummies(df[column], prefix=prefix)
-    df = pd.concat([df, encoded], axis=1)
-    df = df.drop(column, axis=1)
-    return df
-
-
 df = pd.read_csv("Absenteeism_at_work.csv", delimiter=";")
 print(df)
+
+print(f"Numarul de inregistrari: {len(df)}")
+print(f"Numarul de atribute: {len(df.columns)}")
 
 nr_missing_values = sum([True for idx, row in df.iterrows() if any(row.isnull())])
 print("Numar de randuri care au cel putin o valoare lipsa:", nr_missing_values)
 
 df = df.drop(["ID"], axis=1)
 
-df = onehot_encode(df, 'Reason for absence', 'Reason for absence')
+# Onehot encoding
+df = df.copy()
+encoded = pd.get_dummies(df['Reason for absence'], prefix='Reason for absence')
+df = pd.concat([df, encoded], axis=1)
+df = df.drop('Reason for absence', axis=1)
 
 scaler = StandardScaler()
 scaler.fit(df)
@@ -31,7 +29,7 @@ df_features = df.drop(['Absenteeism time in hours'], axis=1)
 df_target = pd.DataFrame(df['Absenteeism time in hours'])
 
 # Selectia atributelor
-dt = tree.DecisionTreeRegressor(max_depth=5, splitter='random', min_samples_leaf=2)
+dt = tree.DecisionTreeRegressor(max_depth=5, splitter='random')
 attributes = []
 for attribute in df_features.columns:
     df_X = pd.DataFrame(df_features[attribute])
@@ -45,7 +43,7 @@ for attribute in df_features.columns:
         attributes.append(attribute)
 
 max_r2 = 0
-max_mse=0
+max_mse = 0
 for i in range(200):
     df_features = df_features[attributes]
     Xtrain, Xtest, ytrain, ytest = train_test_split(df_features, df_target, test_size=0.3, random_state=50)
@@ -72,5 +70,5 @@ pass
 # r2 0.2695110591750415
 # mse 0.816359002840189
 
-# max r2:  0.2094290014845286
-# max mse:  0.8389515341498817
+# max r2:  0.22588657368853415
+# max mse:  0.8301732460341319
