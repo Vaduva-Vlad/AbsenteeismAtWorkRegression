@@ -44,31 +44,35 @@ for attribute in df_features.columns:
 
 max_r2 = 0
 max_mse = 0
+final_df=Xtest.copy()
 for i in range(200):
     df_features = df_features[attributes]
     Xtrain, Xtest, ytrain, ytest = train_test_split(df_features, df_target, test_size=0.3, random_state=50)
     dt.fit(Xtrain, ytrain)
     ypred = dt.predict(Xtest)
     r2 = r2_score(ytest, ypred)
-    mse = root_mean_squared_error(ytest, ypred)
+    rmse = root_mean_squared_error(ytest, ypred)
     if r2 > max_r2:
         max_r2 = r2
-        max_mse = mse
+        max_mse = rmse
         ytest_max = ytest
         ypred_max = ypred
-    print(f"r2: {r2}\n mse: {mse}")
+        final_df["Y_original"] = ytest
+        final_df["Y_predicted"] = ypred
+    print(f"r2: {r2}\n mse: {rmse}")
 print("max r2: ", max_r2)
 print("max mse: ", max_mse)
+print("final df: ", final_df)
 
-pass
-# Atribut: Reason for absence: 0.09280259457339013
 # Atribut: Day of the week: 0.023271586862661287
-# Atribut: Transportation expense: 0.038779640533143644
+# Atribut: Transportation expense: 0.026974626804400548
 # Atribut: Disciplinary failure: 0.010979521161990524
-# Atribut: Weight: 0.011392095480000974
-# Atribut: Body mass index: 0.014011062510043581
-# r2 0.2695110591750415
-# mse 0.816359002840189
+# Atribut: Height: 0.010108070938968372
+# Atribut: Body mass index: 0.01603314454979432
+# Atribut: Reason for absence_0: 0.012372272022983077
+# Atribut: Reason for absence_9: 0.06503519211072961
+# Atribut: Reason for absence_23: 0.028090699506847727
+# Atribut: Reason for absence_27: 0.012784584121467546
 
 # max r2:  0.22588657368853415
-# max mse:  0.8301732460341319
+# max rmse:  0.8301732460341319
